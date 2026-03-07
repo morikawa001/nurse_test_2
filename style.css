@@ -48,3 +48,17 @@ textarea { resize: vertical; min-height: 90px; }
 .error-box { display: none; background: #fff5f5; border: 1.5px solid #fc8181; border-radius: 8px; padding: 14px; color: #c53030; font-size: .9rem; }
 .badge { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 2px 10px; border-radius: 12px; font-size: .78rem; font-weight: 600; margin-left: 8px; }
 @media(max-width:600px){ header{padding:18px 16px;} .card{padding:18px;} }
+.pdf-btn {
+  padding: 8px 18px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.pdf-btn:hover {
+  opacity: .9;
+}
