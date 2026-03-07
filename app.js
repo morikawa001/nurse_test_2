@@ -22,6 +22,7 @@ async function generate() {
   const resultContent = document.getElementById('resultContent');
   const statusBar     = document.getElementById('statusBar');
   const copyBtn       = document.getElementById('copyBtn');
+  const pdfBtn     = document.getElementById('pdfBtn');  // ← 追加
 
   btn.disabled = true;
   loading.style.display   = 'flex';
@@ -29,6 +30,7 @@ async function generate() {
   errorBox.style.display  = 'none';
   resultContent.style.display = 'none';
   copyBtn.style.display   = 'none';
+  pdfBtn.style.display    = 'none';  // ← 追加
   statusBar.textContent   = '';
   resultContent.innerHTML = '';
 
@@ -64,6 +66,7 @@ async function generate() {
     resultContent.style.display = 'block';
     statusBar.innerHTML = '<span class="status-done">✅ 出力完了（' + fullText.length + '文字）</span>';
     copyBtn.style.display = 'inline-block';
+    pdfBtn.style.display = 'inline-block';  // ← この行を追加
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (e) {
@@ -155,3 +158,60 @@ function copyResult() {
 document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
+
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  // 日本語フォント設定（NotoSansJP-Regularを使用）
+  const fontUrl = 'https://cdn.jsdelivr.net/npm/@canvas-fonts/notosansjp-regular@1.0.3/NotoSansJP-Regular.ttf';
+  
+  try {
+    const fontData = await fetch(fontUrl).then(res => res.arrayBuffer());
+    const fontBase64 = btoa(String.fromCharCode(...new Uint8Array(fontData)));
+    doc.addFileToVFS('NotoSansJP-Regular.ttf', fontBase64);
+    doc.addFont('NotoSansJP-Regular.ttf', 'NotoSansJP', 'normal');
+    doc.setFont('NotoSansJP');
+  } catch (e) {
+    console.warn('日本語フォント読み込み失敗、デフォルトフォントを使用:', e);
+  }
+
+  // テキスト取得（HTMLから）
+  const resultDiv = document.getElementById('resultContent');
+  const text = resultDiv.innerText;
+
+  // タイトル
+  doc.setFontSize(16);
+  doc.text('看護研究アイデア ブラッシュアップ結果', 105, 15, { align: 'center' });
+
+  // 本文
+  doc.setFontSize(10);
+  const lines = doc.splitTextToSize(text, 180);
+  
+  let y = 25;
+  const lineHeight = 7;
+  const pageHeight = 280;
+
+  lines.forEach(line => {
+    if (y > pageHeight) {
+      doc.addPage();
+      y = 15;
+    }
+    doc.text(line, 15, y);
+    y += lineHeight;
+  });
+
+  // ダウンロード
+  const theme = document.getElementById('theme').value.trim() || '看護研究';
+  const filename = `${theme.substring(0, 20)}_改善提案.pdf`;
+  doc.save(filename);
+
+  // ボタンフィードバック
+  const btn = document.getElementById('pdfBtn');
+  btn.textContent = '✅ PDFを保存しました！';
+  setTimeout(() => { btn.textContent = '📄 PDFで出力'; }, 2000);
+}
