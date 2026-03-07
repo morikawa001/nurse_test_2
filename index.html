@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>看護研究アイデア ブラッシュアップAI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <div class="icon">&#x1F3E5;</div>
+  <div>
+    <h1>看護研究アイデア ブラッシュアップAI</h1>
+    <p>Gemini AIがあなたの研究アイデアをPICO/PECOフレームワークで整理・改善提案します</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>&#x1F4DD; 研究アイデアを入力</h2>
+
+    <label>研究テーマ（キーワード） <span style="color:red">*</span></label>
+    <input type="text" id="theme" placeholder="例：術後患者の疼痛管理、認知症高齢者のせん妄予防" />
+
+    <label>研究背景・動機（任意）</label>
+    <textarea id="background" placeholder="例：病棟で術後せん妄の発生が多く、予防ケアの標準化が必要と感じている"></textarea>
+
+    <label>想定する研究デザイン（任意）</label>
+    <select id="design">
+      <option value="">─ 選択してください ─</option>
+      <option value="横断研究">横断研究（Cross-sectional study）</option>
+      <option value="縦断研究・コホート研究">縦断研究・コホート研究</option>
+      <option value="ケースコントロール研究">ケースコントロール研究</option>
+      <option value="ランダム化比較試験（RCT）">ランダム化比較試験（RCT）</option>
+      <option value="準実験研究">準実験研究</option>
+      <option value="質的研究">質的研究（インタビュー・グラウンデッドセオリー等）</option>
+      <option value="混合研究法">混合研究法（Mixed Methods）</option>
+      <option value="文献レビュー・系統的レビュー">文献レビュー・系統的レビュー</option>
+      <option value="未定">未定（AIに提案してほしい）</option>
+    </select>
+
+    <label>重点的に改善してほしい点（複数選択可）</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" value="PICO/PECOの整理"> PICO/PECOの整理</label>
+      <label><input type="checkbox" value="研究目的の明確化"> 研究目的の明確化</label>
+      <label><input type="checkbox" value="アウトカム指標の提案"> アウトカム指標の提案</label>
+      <label><input type="checkbox" value="倫理的配慮"> 倫理的配慮</label>
+      <label><input type="checkbox" value="研究デザインの適切性"> 研究デザインの適切性</label>
+      <label><input type="checkbox" value="先行研究との差別化"> 先行研究との差別化</label>
+      <label><input type="checkbox" value="データ収集方法"> データ収集方法</label>
+      <label><input type="checkbox" value="統計解析方法の提案"> 統計解析方法の提案</label>
+    </div>
+
+    <label style="margin-top:18px">研究対象施設・部署（任意）</label>
+    <input type="text" id="setting" placeholder="例：急性期病棟、外来化学療法室、ICU" />
+  </div>
+
+  <button class="btn-primary" id="generateBtn" onclick="generate()">
+    &#x2728; AIでブラッシュアップする
+  </button>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    Gemini AIが生成中です...
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="card" id="result">
+    <h2>&#x1F916; AIによる改善提案 <span class="badge">Gemini (GAS)</span></h2>
+
+    <div class="result-content" id="resultContent" style="display:none"></div>
+
+    <div class="status-bar" id="statusBar"></div>
+    <button class="copy-btn" id="copyBtn" style="display:none" onclick="copyResult()">&#x1F4CB; 結果をコピー</button>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
