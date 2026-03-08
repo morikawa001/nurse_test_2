@@ -22,7 +22,7 @@ async function generate() {
   const resultContent = document.getElementById('resultContent');
   const statusBar     = document.getElementById('statusBar');
   const copyBtn       = document.getElementById('copyBtn');
-  const pdfBtn     = document.getElementById('pdfBtn');  // ← 追加
+  const pdfBtn        = document.getElementById('pdfBtn');
 
   btn.disabled = true;
   loading.style.display   = 'flex';
@@ -30,7 +30,7 @@ async function generate() {
   errorBox.style.display  = 'none';
   resultContent.style.display = 'none';
   copyBtn.style.display   = 'none';
-  pdfBtn.style.display    = 'none';  // ← 追加
+  pdfBtn.style.display    = 'none';
   statusBar.textContent   = '';
   resultContent.innerHTML = '';
 
@@ -66,7 +66,7 @@ async function generate() {
     resultContent.style.display = 'block';
     statusBar.innerHTML = '<span class="status-done">✅ 出力完了（' + fullText.length + '文字）</span>';
     copyBtn.style.display = 'inline-block';
-    pdfBtn.style.display = 'inline-block';  // ← この行を追加
+    pdfBtn.style.display  = 'inline-block';
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (e) {
@@ -159,6 +159,7 @@ document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
 
+// ★ シンプル版 PDF 出力
 async function exportPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert('PDFライブラリが読み込まれていません');
@@ -177,18 +178,7 @@ async function exportPDF() {
   const theme = document.getElementById('theme').value.trim() || '看護研究';
   const filename = `${theme.substring(0, 20)}_改善提案.pdf`;
   doc.save(filename);
-}
 
-    doc.text(line, 15, y);
-    y += lineHeight;
-  });
-
-  // ダウンロード
-  const theme = document.getElementById('theme').value.trim() || '看護研究';
-  const filename = `${theme.substring(0, 20)}_改善提案.pdf`;
-  doc.save(filename);
-
-  // ボタンフィードバック
   const btn = document.getElementById('pdfBtn');
   btn.textContent = '✅ PDFを保存しました！';
   setTimeout(() => { btn.textContent = '📄 PDFで出力'; }, 2000);
