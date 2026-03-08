@@ -73,15 +73,27 @@
 
     <div class="result-content" id="resultContent" style="display:none"></div>
 
-    <div class="status-bar" id="statusBar"></div>
-    <button class="copy-btn" id="copyBtn" style="display:none; margin-top: 16px;" onclick="copyResult()">
-      📋 結果をコピー
-    </button>
-  </div>
+     <div class="status-bar" id="statusBar"></div>
+<div style="display: flex; gap: 12px; margin-top: 16px;">
+  <button class="copy-btn" id="copyBtn" style="display:none; flex: 1; margin: 0;" onclick="copyResult()">
+    📋 結果をコピー
+  </button>
+  <button class="pdf-btn" id="pdfBtn" style="display:none; flex: 1; margin: 0;" onclick="exportPDF()">
+    📄 PDFで出力
+  </button>
+</div>
 
 </div>
 
-<!-- 自作スクリプトのみ -->
-<script src="app.js"></script>
+   <!-- jsPDF 本体（必須） -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    integrity="sha512-VtVYwqE4U3wT4eqK2ZcyQvXhTDHUX2eTj5I4z2ipbS3LS8fyPZIKt7KcDgBq0HaxP5mObZymu1tS3YwM4dZL0w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+
+  <!-- 自作スクリプト（必ず jsPDF の後） -->
+  <script src="app.js"></script>
 </body>
 </html>
