@@ -161,51 +161,24 @@ document.getElementById('theme').addEventListener('keydown', e => {
 
 async function exportPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert('PDF生成ライブラリの読み込みに失敗しました。インターネット接続とindex.htmlの<script>タグを確認してください。');
+    alert('PDFライブラリが読み込まれていません');
     return;
   }
-
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4'
-  });
+  const doc = new jsPDF();
 
-  // 日本語フォント設定（NotoSansJP-Regularを使用）
-  const fontUrl = 'https://cdn.jsdelivr.net/npm/@canvas-fonts/notosansjp-regular@1.0.3/NotoSansJP-Regular.ttf';
-  
-  try {
-    const fontData = await fetch(fontUrl).then(res => res.arrayBuffer());
-    const fontBase64 = btoa(String.fromCharCode(...new Uint8Array(fontData)));
-    doc.addFileToVFS('NotoSansJP-Regular.ttf', fontBase64);
-    doc.addFont('NotoSansJP-Regular.ttf', 'NotoSansJP', 'normal');
-    doc.setFont('NotoSansJP');
-  } catch (e) {
-    console.warn('日本語フォント読み込み失敗、デフォルトフォントを使用:', e);
-  }
-
-  // テキスト取得（HTMLから）
   const resultDiv = document.getElementById('resultContent');
-  const text = resultDiv.innerText;
+  const text = resultDiv.innerText || '結果がありません';
 
-  // タイトル
-  doc.setFontSize(16);
-  doc.text('看護研究アイデア ブラッシュアップ結果', 105, 15, { align: 'center' });
-
-  // 本文
-  doc.setFontSize(10);
+  doc.setFontSize(12);
   const lines = doc.splitTextToSize(text, 180);
-  
-  let y = 25;
-  const lineHeight = 7;
-  const pageHeight = 280;
+  doc.text(lines, 10, 10);
 
-  lines.forEach(line => {
-    if (y > pageHeight) {
-      doc.addPage();
-      y = 15;
-    }
+  const theme = document.getElementById('theme').value.trim() || '看護研究';
+  const filename = `${theme.substring(0, 20)}_改善提案.pdf`;
+  doc.save(filename);
+}
+
     doc.text(line, 15, y);
     y += lineHeight;
   });
