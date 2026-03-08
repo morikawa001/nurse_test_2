@@ -22,7 +22,6 @@ async function generate() {
   const resultContent = document.getElementById('resultContent');
   const statusBar     = document.getElementById('statusBar');
   const copyBtn       = document.getElementById('copyBtn');
-  const pdfBtn        = document.getElementById('pdfBtn');
 
   btn.disabled = true;
   loading.style.display   = 'flex';
@@ -30,7 +29,6 @@ async function generate() {
   errorBox.style.display  = 'none';
   resultContent.style.display = 'none';
   copyBtn.style.display   = 'none';
-  pdfBtn.style.display    = 'none';
   statusBar.textContent   = '';
   resultContent.innerHTML = '';
 
@@ -66,7 +64,6 @@ async function generate() {
     resultContent.style.display = 'block';
     statusBar.innerHTML = '<span class="status-done">✅ 出力完了（' + fullText.length + '文字）</span>';
     copyBtn.style.display = 'inline-block';
-    pdfBtn.style.display  = 'inline-block';
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (e) {
@@ -158,72 +155,3 @@ function copyResult() {
 document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
-
-// PDF 出力（日本語フォント: M PLUS 1p）
-async function exportPDF() {
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert('PDFライブラリが読み込まれていません');
-    return;
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4'
-  });
-
-  // 日本語フォント（M PLUS 1p）を取得して埋め込む
-  // 404を避けるため、M PLUS 1p Regular の安定URLを使用
-  const fontUrl = 'https://raw.githubusercontent.com/googlefonts/mplus-font/master/fonts/ttf/MPLUS1p-Regular.ttf';
-
-  try {
-    const fontData = await fetch(fontUrl).then(res => res.arrayBuffer());
-    let binary = '';
-    const bytes = new Uint8Array(fontData);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    const fontBase64 = btoa(binary);
-
-    // フォント登録（フォント名は任意だが、後で同じ名前で setFont する）
-    doc.addFileToVFS('MPLUS1p-Regular.ttf', fontBase64);
-    doc.addFont('MPLUS1p-Regular.ttf', 'MPLUS1p', 'normal');
-    doc.setFont('MPLUS1p', 'normal');
-  } catch (e) {
-    console.warn('日本語フォント読み込み失敗、デフォルトフォントを使用します:', e);
-  }
-
-  const resultDiv = document.getElementById('resultContent');
-  const text = resultDiv.innerText || '結果がありません';
-
-  // タイトル
-  doc.setFontSize(14);
-  doc.text('看護研究アイデア ブラッシュアップ結果', 105, 15, { align: 'center' });
-
-  // 本文
-  doc.setFontSize(10);
-  const lines = doc.splitTextToSize(text, 180);
-
-  let y = 25;
-  const lineHeight = 6;
-  const pageHeight = 280;
-
-  lines.forEach(line => {
-    if (y > pageHeight) {
-      doc.addPage();
-      y = 15;
-    }
-    doc.text(line, 15, y);
-    y += lineHeight;
-  });
-
-  const theme = document.getElementById('theme').value.trim() || '看護研究';
-  const filename = `${theme.substring(0, 20)}_改善提案.pdf`;
-  doc.save(filename);
-
-  const btn = document.getElementById('pdfBtn');
-  btn.textContent = '✅ PDFを保存しました！';
-  setTimeout(() => { btn.textContent = '📄 PDFで出力'; }, 2000);
-}
-
