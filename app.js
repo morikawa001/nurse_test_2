@@ -183,3 +183,4 @@ async function exportPDF() {
   btn.textContent = '✅ PDFを保存しました！';
   setTimeout(() => { btn.textContent = '📄 PDFで出力'; }, 2000);
 }
+
