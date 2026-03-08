@@ -160,6 +160,11 @@ document.getElementById('theme').addEventListener('keydown', e => {
 });
 
 async function exportPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert('PDF生成ライブラリの読み込みに失敗しました。インターネット接続とindex.htmlの<script>タグを確認してください。');
+    return;
+  }
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({
     orientation: 'portrait',
