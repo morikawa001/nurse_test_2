@@ -159,21 +159,64 @@ document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
 
-// PDF 出力（シンプル版）
+// PDF 出力（日本語フォント対応版）
 async function exportPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert('PDFライブラリが読み込まれていません');
     return;
   }
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  // 日本語フォント（NotoSansJP）をリモートから取得して埋め込む
+  const fontUrl = 'https://cdn.jsdelivr.net/npm/@canvas-fonts/notosansjp-regular@1.0.3/NotoSansJP-Regular.ttf';
+
+  try {
+    const fontData = await fetch(fontUrl).then(res => res.arrayBuffer());
+    // ArrayBuffer → Base64
+    let binary = '';
+    const bytes = new Uint8Array(fontData);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    const fontBase64 = btoa(binary);
+
+    // フォントを登録
+    doc.addFileToVFS('NotoSansJP-Regular.ttf', fontBase64);
+    doc.addFont('NotoSansJP-Regular.ttf', 'NotoSansJP', 'normal');
+    doc.setFont('NotoSansJP', 'normal');
+  } catch (e) {
+    console.warn('日本語フォント読み込み失敗、デフォルトフォントを使用します:', e);
+  }
 
   const resultDiv = document.getElementById('resultContent');
   const text = resultDiv.innerText || '結果がありません';
 
-  doc.setFontSize(12);
+  // タイトル
+  doc.setFontSize(14);
+  doc.text('看護研究アイデア ブラッシュアップ結果', 105, 15, { align: 'center' });
+
+  // 本文
+  doc.setFontSize(10);
   const lines = doc.splitTextToSize(text, 180);
-  doc.text(lines, 10, 10);
+
+  let y = 25;
+  const lineHeight = 6;
+  const pageHeight = 280;
+
+  lines.forEach(line => {
+    if (y > pageHeight) {
+      doc.addPage();
+      y = 15;
+    }
+    doc.text(line, 15, y);
+    y += lineHeight;
+  });
 
   const theme = document.getElementById('theme').value.trim() || '看護研究';
   const filename = `${theme.substring(0, 20)}_改善提案.pdf`;
@@ -183,4 +226,5 @@ async function exportPDF() {
   btn.textContent = '✅ PDFを保存しました！';
   setTimeout(() => { btn.textContent = '📄 PDFで出力'; }, 2000);
 }
+
 
