@@ -1,5 +1,5 @@
 // GASのウェブアプリURLをここに貼る
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwFGWXonRPSDqhToxurlrxmvb0oMydOdM18_2Jy5aQWDXP60o6bKjkjYYfu741dgkqB/exec";
+const GAS_URL = "GASのウェブアプリURLをここに貼る";
 
 function getCheckedValues() {
   return Array.from(document.querySelectorAll('.checkbox-group input[type=checkbox]:checked'))
@@ -154,5 +154,4 @@ function copyResult() {
 
 document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
-}
-);
+});
