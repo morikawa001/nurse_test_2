@@ -159,7 +159,7 @@ document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
 
-// PDF 出力（日本語フォント対応版）
+// PDF 出力（日本語フォント: M PLUS 1p）
 async function exportPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert('PDFライブラリが読み込まれていません');
@@ -172,12 +172,12 @@ async function exportPDF() {
     format: 'a4'
   });
 
-  // 日本語フォント（NotoSansJP）をリモートから取得して埋め込む
-  const fontUrl = 'https://cdn.jsdelivr.net/npm/@canvas-fonts/notosansjp-regular@1.0.3/NotoSansJP-Regular.ttf';
+  // 日本語フォント（M PLUS 1p）を取得して埋め込む
+  // 404を避けるため、M PLUS 1p Regular の安定URLを使用
+  const fontUrl = 'https://raw.githubusercontent.com/googlefonts/mplus-font/master/fonts/ttf/MPLUS1p-Regular.ttf';
 
   try {
     const fontData = await fetch(fontUrl).then(res => res.arrayBuffer());
-    // ArrayBuffer → Base64
     let binary = '';
     const bytes = new Uint8Array(fontData);
     const len = bytes.byteLength;
@@ -186,10 +186,10 @@ async function exportPDF() {
     }
     const fontBase64 = btoa(binary);
 
-    // フォントを登録
-    doc.addFileToVFS('NotoSansJP-Regular.ttf', fontBase64);
-    doc.addFont('NotoSansJP-Regular.ttf', 'NotoSansJP', 'normal');
-    doc.setFont('NotoSansJP', 'normal');
+    // フォント登録（フォント名は任意だが、後で同じ名前で setFont する）
+    doc.addFileToVFS('MPLUS1p-Regular.ttf', fontBase64);
+    doc.addFont('MPLUS1p-Regular.ttf', 'MPLUS1p', 'normal');
+    doc.setFont('MPLUS1p', 'normal');
   } catch (e) {
     console.warn('日本語フォント読み込み失敗、デフォルトフォントを使用します:', e);
   }
@@ -226,5 +226,4 @@ async function exportPDF() {
   btn.textContent = '✅ PDFを保存しました！';
   setTimeout(() => { btn.textContent = '📄 PDFで出力'; }, 2000);
 }
-
 
