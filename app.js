@@ -159,7 +159,7 @@ document.getElementById('theme').addEventListener('keydown', e => {
   if (e.key === 'Enter') generate();
 });
 
-// ★ シンプル版 PDF 出力
+// PDF 出力（シンプル版）
 async function exportPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alert('PDFライブラリが読み込まれていません');
