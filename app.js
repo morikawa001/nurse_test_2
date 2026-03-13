@@ -21,9 +21,10 @@ async function generate() {
   const errorBox      = document.getElementById('errorBox');
   const resultContent = document.getElementById('resultContent');
   const statusBar     = document.getElementById('statusBar');
-  const copyBtn       = document.getElementById('copyBtn');
-　const resetBtn      = document.getElementById('resetBtn'); 
-  const pdfBtn        = document.getElementById('pdfBtn'); 
+  const copyBtn  = document.getElementById('copyBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const pdfBtn   = document.getElementById('pdfBtn');
+
   
   btn.disabled = true;
   loading.style.display   = 'flex';
@@ -220,21 +221,24 @@ function resetForm() {
   document.querySelectorAll('.checkbox-group input[type=checkbox]')
     .forEach(cb => cb.checked = false);
 
-  // 結果表示を消して初期状態に
+  // 結果表示を初期化
   document.getElementById('resultContent').innerHTML = '';
   document.getElementById('resultContent').style.display = 'none';
   document.getElementById('statusBar').textContent = '';
   document.getElementById('errorBox').style.display = 'none';
 
+  // ボタンを隠す
   document.getElementById('copyBtn').style.display = 'none';
   const resetBtn = document.getElementById('resetBtn');
   if (resetBtn) resetBtn.style.display = 'none';
+  const pdfBtn = document.getElementById('pdfBtn');
+  if (pdfBtn) pdfBtn.style.display = 'none';
 
-  // コピー済み表示を元に戻す（念のため）
+  // コピー文言を戻す
   const b = document.getElementById('copyBtn');
   if (b) b.textContent = '📋 結果をコピー';
 
-  // ページ上部の入力カードへスクロール
+  // 入力欄の先頭へ戻る
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
