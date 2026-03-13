@@ -23,6 +23,7 @@ async function generate() {
   const statusBar     = document.getElementById('statusBar');
   const copyBtn       = document.getElementById('copyBtn');
 　const resetBtn      = document.getElementById('resetBtn'); 
+  const pdfBtn        = document.getElementById('pdfBtn'); 
   
   btn.disabled = true;
   loading.style.display   = 'flex';
@@ -30,7 +31,7 @@ async function generate() {
   errorBox.style.display  = 'none';
   resultContent.style.display = 'none';
   copyBtn.style.display   = 'none';
-  if (resetBtn) resetBtn.style.display = 'none'; 
+  if (pdfBtn) pdfBtn.style.display = 'none';  
   statusBar.textContent   = '';
   resultContent.innerHTML = '';
 
@@ -66,7 +67,7 @@ async function generate() {
     resultContent.style.display = 'block';
     statusBar.innerHTML = '<span class="status-done">✅ 出力完了（' + fullText.length + '文字）</span>';
     copyBtn.style.display = 'inline-block';
-    if (resetBtn) resetBtn.style.display = 'inline-block'; 
+    if (pdfBtn) pdfBtn.style.display = 'inline-block';  
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (e) {
@@ -153,6 +154,57 @@ function copyResult() {
     b.textContent = '✅ コピーしました！';
     setTimeout(() => { b.textContent = '📋 結果をコピー'; }, 2000);
   });
+}
+function printResult() {
+  const content = document.getElementById('resultContent');
+  if (!content || !content.innerHTML.trim()) {
+    alert('出力する内容がありません。');
+    return;
+  }
+
+  // 新しいウィンドウに結果だけを描画して印刷
+  const w = window.open('', '_blank');
+  w.document.write(`
+    <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>看護研究アイデア ブラッシュアップ結果</title>
+        <style>
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+          }
+          h1, h2, h3 {
+            margin-top: 1.2em;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            font-size: 12px;
+          }
+          th {
+            background: #f5f5f5;
+          }
+          ul {
+            padding-left: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>看護研究アイデア ブラッシュアップ結果</h1>
+        ${content.innerHTML}
+      </body>
+    </html>
+  `);
+  w.document.close();
+  w.focus();
+  w.print();  // ブラウザの印刷ダイアログ → PDF保存可
 }
 
 function resetForm() {
