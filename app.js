@@ -31,6 +31,7 @@ async function generate() {
   errorBox.style.display  = 'none';
   resultContent.style.display = 'none';
   copyBtn.style.display   = 'none';
+  if (resetBtn) resetBtn.style.display = 'none';
   if (pdfBtn) pdfBtn.style.display = 'none';  
   statusBar.textContent   = '';
   resultContent.innerHTML = '';
@@ -67,6 +68,7 @@ async function generate() {
     resultContent.style.display = 'block';
     statusBar.innerHTML = '<span class="status-done">✅ 出力完了（' + fullText.length + '文字）</span>';
     copyBtn.style.display = 'inline-block';
+    if (resetBtn) resetBtn.style.display = 'inline-block'; 
     if (pdfBtn) pdfBtn.style.display = 'inline-block';  
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
