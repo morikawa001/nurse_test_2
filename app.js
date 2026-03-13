@@ -22,13 +22,15 @@ async function generate() {
   const resultContent = document.getElementById('resultContent');
   const statusBar     = document.getElementById('statusBar');
   const copyBtn       = document.getElementById('copyBtn');
-
+　const resetBtn      = document.getElementById('resetBtn'); 
+  
   btn.disabled = true;
   loading.style.display   = 'flex';
   result.style.display    = 'none';
   errorBox.style.display  = 'none';
   resultContent.style.display = 'none';
   copyBtn.style.display   = 'none';
+  if (resetBtn) resetBtn.style.display = 'none'; 
   statusBar.textContent   = '';
   resultContent.innerHTML = '';
 
@@ -64,6 +66,7 @@ async function generate() {
     resultContent.style.display = 'block';
     statusBar.innerHTML = '<span class="status-done">✅ 出力完了（' + fullText.length + '文字）</span>';
     copyBtn.style.display = 'inline-block';
+    if (resetBtn) resetBtn.style.display = 'inline-block'; 
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (e) {
@@ -150,6 +153,35 @@ function copyResult() {
     b.textContent = '✅ コピーしました！';
     setTimeout(() => { b.textContent = '📋 結果をコピー'; }, 2000);
   });
+}
+
+function resetForm() {
+  // 入力欄クリア
+  document.getElementById('theme').value = '';
+  document.getElementById('background').value = '';
+  document.getElementById('design').value = '';
+  document.getElementById('setting').value = '';
+
+  // チェックボックス解除
+  document.querySelectorAll('.checkbox-group input[type=checkbox]')
+    .forEach(cb => cb.checked = false);
+
+  // 結果表示を消して初期状態に
+  document.getElementById('resultContent').innerHTML = '';
+  document.getElementById('resultContent').style.display = 'none';
+  document.getElementById('statusBar').textContent = '';
+  document.getElementById('errorBox').style.display = 'none';
+
+  document.getElementById('copyBtn').style.display = 'none';
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.style.display = 'none';
+
+  // コピー済み表示を元に戻す（念のため）
+  const b = document.getElementById('copyBtn');
+  if (b) b.textContent = '📋 結果をコピー';
+
+  // ページ上部の入力カードへスクロール
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.getElementById('theme').addEventListener('keydown', e => {
